@@ -97,13 +97,14 @@ class Grid:
         text_rect.center = ((x + (width / 2)), (y + (height / 2)))
         self.win.blit(text_surface, text_rect)
 
-    def append_grid(self, num):
+    def append_grid(self, num, next_grid=True):
         if num == 0 or validate(self.board, self.index, num):
             x, y = self.index
             self.board[y][x] = num
-            self.index = grid_next_space(self.index)
             self.text = None
             self.text_color = None
+            if next_grid:
+                self.index = grid_next_space(self.index)
         else:  # prints invalid number
             self.text = "Invalid Number, Try Again"
             self.text_color = self.red
@@ -161,7 +162,6 @@ class Grid:
                 if event.type == pygame.QUIT:
                     run = False
                     break
-                # checks mouse activity
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     mouse = pygame.mouse.get_pos()
                     if 0 < mouse[0] < self.win_width and 0 < mouse[1] < self.win_width:  # within grid
@@ -176,7 +176,7 @@ class Grid:
                         run = False
                         break
                     if self.index:
-                        if keys[pygame.K_RETURN]:  # solves puzzle
+                        if keys[pygame.K_RETURN] or keys[pygame.K_KP_ENTER]:  # solves puzzle
                             self.init_solve()
                         if keys[pygame.K_1] or keys[pygame.K_KP1]:  # for num row and numpad
                             self.append_grid(1)
@@ -197,7 +197,7 @@ class Grid:
                         if keys[pygame.K_9] or keys[pygame.K_KP9]:
                             self.append_grid(9)
                         if keys[pygame.K_0] or keys[pygame.K_KP0] or keys[pygame.K_SPACE] or keys[pygame.K_DELETE] or keys[pygame.K_BACKSPACE]:
-                            self.append_grid(0)
+                            self.append_grid(0, False)
                         if keys[pygame.K_TAB]:
                             if keys[pygame.K_LSHIFT]:
                                 self.index = grid_previous_space(self.index)
