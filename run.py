@@ -50,6 +50,7 @@ class Grid:
     def __init__(self, win_width):
         self.init = pygame.init()
         self.board = new_board()
+        self.board_before = new_board()
         self.text_font = pygame.font.Font("freesansbold.ttf", 30)
         self.win_width = win_width
         self.win_height = int(3 * win_width / 2)
@@ -89,7 +90,11 @@ class Grid:
                     width = self.box_width
                     x_cor = x * width
                     y_cor = y * width
-                    self.display_text(key, x_cor, y_cor, width, width, self.white)
+                    if self.board[y][x] == self.board_before[y][x]:
+                        color = self.white
+                    else:
+                        color = self.green
+                    self.display_text(key, x_cor, y_cor, width, width, color)
 
     def display_text(self, text, x, y, width, height, color):
         text_surface = self.text_font.render(text, True, color)
@@ -101,6 +106,7 @@ class Grid:
         if num == 0 or validate(self.board, self.index, num):
             x, y = self.index
             self.board[y][x] = num
+            self.board_before[y][x] = num
             self.text = None
             self.text_color = None
             if next_grid:
@@ -111,6 +117,7 @@ class Grid:
 
     def clear(self):
         self.board = new_board()
+        self.board_before = new_board()
         self.text = "Cleared Board"
         self.text_color = self.red
 
