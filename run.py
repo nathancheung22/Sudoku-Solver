@@ -203,8 +203,13 @@ class Grid:
                             self.append_grid(8)
                         if keys[pygame.K_9] or keys[pygame.K_KP9]:
                             self.append_grid(9)
-                        if keys[pygame.K_0] or keys[pygame.K_KP0] or keys[pygame.K_SPACE] or keys[pygame.K_DELETE] or keys[pygame.K_BACKSPACE]:
+                        if keys[pygame.K_0] or keys[pygame.K_KP0] or keys[pygame.K_SPACE] or keys[pygame.K_BACKSPACE]:
                             self.append_grid(0, False)
+                        if keys[pygame.K_DELETE]:
+                            if keys[pygame.K_LCTRL]:
+                                self.clear()
+                            else:
+                                self.append_grid(0, False)
                         if keys[pygame.K_TAB]:
                             if keys[pygame.K_LSHIFT]:
                                 self.index = grid_previous_space(self.index)
