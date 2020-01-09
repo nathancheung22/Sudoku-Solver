@@ -1,5 +1,5 @@
 import pygame
-from sudoku import validate, solve, new_board
+from sudoku import *
 
 
 def grid_next_space(index):
@@ -158,33 +158,61 @@ class Grid:
         s.fill(color)
         self.win.blit(s, cor)
 
+    def inside_object(self, mouse, object_name):
+        objects = {
+            "grid": {
+                "left": 0,
+                "right": self.win_width,
+                "top": 0,
+                "bottom": self.win_width
+            },
+            "clear button": {
+                "left": self.left_clear,
+                "right": self.right_clear,
+                "top": self.top_clear,
+                "bottom": self.bot_clear
+            },
+            "solve button": {
+                "left": self.left_solve,
+                "right": self.right_solve,
+                "top": self.top_solve,
+                "bottom": self.bot_solve
+            }
+        }
+        obj = objects[object_name]
+        return obj["left"] < mouse[0] < obj["right"] and obj["top"] < mouse[1] < obj["bottom"]
+
     def run(self):
         pygame.display.set_caption("Sudoku Solver")
-        run = True
+        r = True
 
-        while run:
+        while r:
             self.win.fill(self.dark_grey)
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    run = False
+                    r = False
                     break
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     mouse = pygame.mouse.get_pos()
-                    if 0 < mouse[0] < self.win_width and 0 < mouse[1] < self.win_width:  # within grid
-                        self.index = self.index_grid(mouse)
-                    elif self.left_clear < mouse[0] < self.right_clear and self.top_clear < mouse[1] < self.bot_clear:
+                    if self.inside_object(mouse, "grid"):
+                        if self.index_grid(mouse) == self.index:  # checks if clicked grid is already selected
+                            self.index = None
+                        else:
+                            self.index = self.index_grid(mouse)
+                    elif self.inside_object(mouse, "clear button"):
                         self.clear()
-                    elif self.left_solve < mouse[0] < self.right_solve and self.top_solve < mouse[1] < self.bot_solve:
+                    elif self.inside_object(mouse, "solve button"):
                         self.init_solve()
                 if event.type == pygame.KEYDOWN:
                     keys = pygame.key.get_pressed()
                     if keys[pygame.K_ESCAPE]:  # ends game
-                        run = False
+                        r = False
                         break
+                    if keys[pygame.K_RETURN] or keys[pygame.K_KP_ENTER]:  # solves puzzle
+                        self.init_solve()
+
                     if self.index:
-                        if keys[pygame.K_RETURN] or keys[pygame.K_KP_ENTER]:  # solves puzzle
-                            self.init_solve()
                         if keys[pygame.K_1] or keys[pygame.K_KP1]:  # for num row and numpad
                             self.append_grid(1)
                         if keys[pygame.K_2] or keys[pygame.K_KP2]:
@@ -205,11 +233,6 @@ class Grid:
                             self.append_grid(9)
                         if keys[pygame.K_0] or keys[pygame.K_KP0] or keys[pygame.K_SPACE] or keys[pygame.K_DELETE] or keys[pygame.K_BACKSPACE]:
                             self.append_grid(0, False)
-                        if keys[pygame.K_TAB]:
-                            if keys[pygame.K_LSHIFT]:
-                                self.index = grid_previous_space(self.index)
-                            else:
-                                self.index = grid_next_space(self.index)
                         if keys[pygame.K_RIGHT]:
                             self.index = grid_next_space(self.index)
                         if keys[pygame.K_LEFT]:
@@ -218,6 +241,11 @@ class Grid:
                             self.index = grid_vert_up(self.index)
                         if keys[pygame.K_DOWN]:
                             self.index = grid_vert_down(self.index)
+                        if keys[pygame.K_TAB]:
+                            if keys[pygame.K_LSHIFT]:
+                                self.index = grid_previous_space(self.index)
+                            else:
+                                self.index = grid_next_space(self.index)
 
             # draw GUI elements
             for x in range(1, 9):
@@ -234,11 +262,11 @@ class Grid:
 
             # hover
             mouse = pygame.mouse.get_pos()
-            if 0 < mouse[0] < self.win_width and 0 < mouse[1] < self.win_width:  # mouse is in grid
+            if self.inside_object(mouse, "grid"):  # mouse is in grid
                 self.hover_grid(mouse)
-            if self.left_clear < mouse[0] < self.right_clear and self.top_clear < mouse[1] < self.bot_clear:
+            if self.inside_object(mouse, "clear button"):
                 self.hover_button((self.left_clear, self.top_clear), self.white)
-            if self.left_solve < mouse[0] < self.right_solve and self.top_solve < mouse[1] < self.bot_solve:
+            if self.inside_object(mouse, "solve button"):
                 self.hover_button((self.left_solve, self.top_solve), self.white)
 
             # non-static GUI elements
