@@ -83,6 +83,14 @@ class Grid:
         self.blue = (0, 0, 200)
 
     def display_board(self):
+        for x in range(1, 9):
+            pos = (x / 9) * self.win_width
+            if x % 3 == 0:
+                line_color = self.white
+            else:
+                line_color = self.grey
+            pygame.draw.line(self.win, line_color, (pos, 0), (pos, self.win_width))
+            pygame.draw.line(self.win, line_color, (0, pos), (self.win_width, pos))
         for y in range(9):
             for x in range(9):
                 if self.board[y][x] != 0:
@@ -248,17 +256,9 @@ class Grid:
                                 self.index = grid_next_space(self.index)
 
             # draw GUI elements
-            for x in range(1, 9):
-                pos = (x / 9) * self.win_width
-                if x % 3 == 0:
-                    line_color = self.white
-                else:
-                    line_color = self.grey
-                pygame.draw.line(self.win, line_color, (pos, 0), (pos, self.win_width))
-                pygame.draw.line(self.win, line_color, (0, pos), (self.win_width, pos))
+            self.display_board()
             self.button(self.left_clear, self.top_clear, self.rect_width, self.rect_height, self.red, "CLEAR", self.black)
             self.button(self.left_solve, self.top_solve, self.rect_width, self.rect_height, self.green, "SOLVE", self.black)
-            self.display_board()
 
             # hover
             mouse = pygame.mouse.get_pos()
