@@ -262,7 +262,7 @@ class Grid:
 
             # hover
             mouse = pygame.mouse.get_pos()
-            if self.inside_object(mouse, "grid"):  # mouse is in grid
+            if self.inside_object(mouse, "grid"):
                 self.hover_grid(mouse)
             if self.inside_object(mouse, "clear button"):
                 self.hover_button((self.left_clear, self.top_clear), self.white)
