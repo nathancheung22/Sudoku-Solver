@@ -49,8 +49,8 @@ def grid_vert_down(index):
 class Grid:
     def __init__(self, win_width):
         self.init = pygame.init()
-        self.board = new_board()
-        self.board_before = new_board()
+        self.board = newBoard()
+        self.board_before = newBoard()
         self.text_font = pygame.font.Font("freesansbold.ttf", 30)
         self.win_width = win_width
         self.win_height = int(3 * win_width / 2)
@@ -116,8 +116,8 @@ class Grid:
             self.text_color = self.red
 
     def clear(self):
-        self.board = new_board()
-        self.board_before = new_board()
+        self.board = newBoard()
+        self.board_before = newBoard()
         self.text = "Cleared Board"
         self.text_color = self.red
 
