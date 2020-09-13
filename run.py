@@ -123,8 +123,12 @@ class Grid:
 
     def init_solve(self):
         solve(self.board)
-        self.text = "Solved Board"
-        self.text_color = self.green
+        if any(0 in x for x in self.board):
+            self.text = "Invalid Board"
+            self.text_color = self.red
+        else:
+            self.text = "Solved Board"
+            self.text_color = self.green
 
     def button(self, x, y, width, height, color, text, text_color):
         pygame.draw.rect(self.win, color, (x, y, width, height))
